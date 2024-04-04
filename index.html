@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skyler Extension</title>
+    <script src="cropper/cropper.min.js"></script>
+    <script src="node_modules/jspdf/dist/jspdf.umd.min.js"></script>
+    <script src="js/script.js" type="module"></script>
+    <link rel="stylesheet" href="cropper/cropper.min.css">
+    <link rel="stylesheet" href="styles/styles.css">
+  </head>
+  <body>
+    <div class="header">
+      <div class="logo-container">
+        <div class="logo">
+          <img src="assets/logo-Skyler-branco.webp" alt="Logo Skyler Extension">
+        </div>
+      </div>
+    </div>
+    
+    <div class="container">
+
+    </div>
+
+    <div class="cut">
+      <button id="button-cut">Recortar</button>
+      <button id="button-confirm" style="display: none;">Confirmar recorte</button>
+    </div>
+
+    <div class="createPDF">
+      <input type="text" id="currencyInput" placeholder="Digite o valor do bilhete"/>
+      <button id="pdfGeneration">Gerar PDF</button>
+    </div>
+  </body>
+</html>
