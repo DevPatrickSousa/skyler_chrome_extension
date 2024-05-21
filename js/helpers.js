@@ -12,13 +12,6 @@ export function formatValue(value) {
 }
 
 // Function created to add a listener to format input value after the DOM has been initialized.
-// export function formattedValueListener(value) {
-//   value.addEventListener('input', function(e) {
-//     let inputVal = e.target.value;
-//     e.target.value = inputVal ? formatValue(inputVal) : 'R$ 0,00';
-//   });
-// }
-
 export function addCurrencyInputListeners(cotacoes) {
   const cotacoesArray = Array.from(cotacoes);
 
@@ -44,7 +37,7 @@ function createCotacaoFormItem(imgSrc, spanText, selectOptions = [], inputPlaceh
   const imgDiv = document.createElement("div");
   const img = document.createElement("img");
   img.src = imgSrc;
-  img.alt = "Imagem";
+  img.alt = "teste";
   imgDiv.appendChild(img);
   imgDiv.classList.add(`cotacao_form_item_img`);
   div.appendChild(imgDiv);
@@ -60,7 +53,7 @@ function createCotacaoFormItem(imgSrc, spanText, selectOptions = [], inputPlaceh
 
   if (selectOptions.length > 0) {
     const select = document.createElement("select");
-    
+
     if (spanText === "Quantidade de bagagens") {
       select.name = "bagagem";
       select.id = "bagagem";
@@ -106,7 +99,7 @@ function createCotacaoImg(imgSrc, type, spanText) {
   const div = document.createElement("div");
   const img = document.createElement("img");
   img.src = imgSrc;
-  img.alt = "Imagem";
+  img.alt = "teste";
   div.appendChild(img);
 
   const span = document.createElement("span");
@@ -192,8 +185,8 @@ export function createPDF(cotacoes, screenshotImageUrl) {
   const pageHeight = doc.internal.pageSize.getHeight();
   const midPage = pageWidth / 2;
   const imageUrl = '/assets/logo-Skyler-branco.png';
-  const imageSize = 50;
-  const imageX = midPage - (imageSize / 2); // Posição X para centralizar horizontalmente
+  const imageSize = 45;
+  const imageX = midPage - (imageSize / 2); 
 
   let verticalPosition = 50;
   let verticalImagePosition = 5;
@@ -201,7 +194,7 @@ export function createPDF(cotacoes, screenshotImageUrl) {
   doc.setFillColor(188, 188, 188);
   doc.rect(0, 0, doc.internal.pageSize.width, doc.internal.pageSize.height, 'F');
   doc.addImage(imageUrl, 'PNG', imageX, verticalImagePosition, imageSize, imageSize);
-  // Ajustar a posição vertical após a imagem
+
   verticalPosition = verticalImagePosition + 50 + 15;
 
   // const screenshotImage = new Image();
@@ -210,7 +203,10 @@ export function createPDF(cotacoes, screenshotImageUrl) {
 
   cotacoes.forEach((cotacao) => {
     doc.text(`Cotação ID ${cotacao.id}`, midPage, verticalPosition, null, null, 'center');
-
+    verticalPosition += 10;
+    doc.text(`Quantidade de bagagens ${cotacao.bagagem}`, midPage, verticalPosition, null, null, 'center');
+    verticalPosition += 10;
+    doc.text(`Tipo do assento ${cotacao.assento}`, midPage, verticalPosition, null, null, 'center');
     verticalPosition += 10;
 
     doc.text(`Valor do bilhete: ${cotacao.valor}`, midPage, verticalPosition, null, null, 'center');
