@@ -1,85 +1,124 @@
+import { createNewCotacaoContainer, createPDF, addCurrencyInputListeners} from './helpers.js';
+
 document.addEventListener("DOMContentLoaded", function() {
-  const cutButton = document.getElementById("button-cut");
-  const confirmButton = document.getElementById("button-confirm");
-  const pdfGeneration = document.getElementById("pdfGeneration");
+  // const cutButton = document.getElementById("button-cut");
+  // const confirmButton = document.getElementById("button-confirm");
+  const pdfGeneration = document.getElementById("pdf_generation");
   const screenshotContainer = document.querySelector(".container");
-  const currencyInput = document.getElementById('currencyInput');
+  const currencyInputs = document.querySelectorAll('.currency_input');
+  const cotacoesContainer = document.getElementById("cotacoes");
+  const idaRadio = document.getElementById("ida");
+  const idaVoltaRadio = document.getElementById("ida_volta");
+  const addCotacaoIdaButton = document.querySelector(".cotacoes_ida .button_add_cotacao");
+  const addCotacaoVoltaButton = document.querySelector(".cotacoes_volta .button_add_cotacao");
+
+  let default_arrow = document.querySelector(".arrow");
   let cropper;
+  let idaCotacoes = [];
+  let voltaCotacoes = [];
 
-  chrome.tabs.captureVisibleTab(function(screenshotDataUrl) {
-    const screenshotImage = new Image();
-    screenshotImage.src = screenshotDataUrl;
-    screenshotContainer.appendChild(screenshotImage);
-  });
+  // let idaCotacoes = Array.from(document.querySelectorAll('.cotacoes_ida .cotacao_ida .currency_input'));
+  // let voltaCotacoes = Array.from(document.querySelectorAll('.cotacoes_volta .cotacao_volta .currency_input'));
 
-  cutButton.addEventListener('click', function() {
-    cropper = new Cropper(screenshotContainer.querySelector('img'), {
-      aspectRatio: 16 / 9, 
-      crop: function(event) {
-        console.log(event.detail.x, event.detail.y, event.detail.width, event.detail.height);
-      }
-    });
-
-    cutButton.style.display = 'none';
-    confirmButton.style.display = 'block';
-  });
-
-  confirmButton.addEventListener('click', function() {
-    if (cropper) {
-      const croppedCanvas = cropper.getCroppedCanvas();
-      const croppedImage = new Image();
-      croppedImage.src = croppedCanvas.toDataURL();
-      screenshotContainer.innerHTML = '';
-      screenshotContainer.appendChild(croppedImage);
-
-      cropper.destroy();
-      cropper = null;
-
-      confirmButton.style.display = 'none';
-      cutButton.style.display = 'block';
+  idaRadio.addEventListener("change", function() {
+    const cotacoesIdaContainer = document.querySelector(".cotacoes_ida");
+    const cotacoesVoltaContainer = document.querySelector(".cotacoes_volta");
+  
+    if (idaRadio.checked) {
+      cotacoesIdaContainer.style.display = "block";
+      cotacoesVoltaContainer.style.display = "none";
+      default_arrow.style.display = "none";
+      idaCotacoes = Array.from(document.querySelectorAll('.cotacoes_ida .cotacao_ida'));
+      addCurrencyInputListeners(idaCotacoes);
     }
   });
+  
+  idaVoltaRadio.addEventListener("change", function() {
+    const cotacoesIdaContainer = document.querySelector(".cotacoes_ida");
+    const cotacoesVoltaContainer = document.querySelector(".cotacoes_volta");
+  
+    if (idaVoltaRadio.checked) {
+      cotacoesIdaContainer.style.display = "block";
+      cotacoesVoltaContainer.style.display = "block";
+      default_arrow.style.display = "flex";
+      idaCotacoes = Array.from(document.querySelectorAll('.cotacoes_ida .cotacao_ida'));
+      voltaCotacoes = Array.from(document.querySelectorAll('.cotacoes_volta .cotacao_volta'));
+      addCurrencyInputListeners([...idaCotacoes, ...voltaCotacoes]);
+    }
+  });  
+
+  addCotacaoIdaButton.addEventListener("click", function() {
+    const newCotacao = createNewCotacaoContainer("ida");
+    idaCotacoes.push(newCotacao);
+  });
+
+  addCotacaoVoltaButton.addEventListener("click", function() {
+    const newCotacao = createNewCotacaoContainer("volta");
+    voltaCotacoes.push(newCotacao);
+  });
+
+  // chrome.tabs.captureVisibleTab(function(screenshotDataUrl) {
+  //   const screenshotImage = new Image();
+  //   screenshotImage.src = screenshotDataUrl;
+  //   screenshotContainer.appendChild(screenshotImage);
+  // });
+
+  // cutButton.addEventListener('click', function() {
+  //   cropper = new Cropper(screenshotContainer.querySelector('img'), {
+  //     aspectRatio: 16 / 9, 
+  //     crop: function(event) {
+  //       console.log(event.detail.x, event.detail.y, event.detail.width, event.detail.height);
+  //     }
+  //   });
+
+  //   cutButton.style.display = 'none';
+  //   confirmButton.style.display = 'block';
+  // });
+
+  // confirmButton.addEventListener('click', function() {
+  //   if (cropper) {
+  //     const croppedCanvas = cropper.getCroppedCanvas();
+  //     const croppedImage = new Image();
+  //     croppedImage.src = croppedCanvas.toDataURL();
+  //     screenshotContainer.innerHTML = '';
+  //     screenshotContainer.appendChild(croppedImage);
+
+  //     cropper.destroy();
+  //     cropper = null;
+
+  //     confirmButton.style.display = 'none';
+  //     cutButton.style.display = 'block';
+  //   }
+  // });
 
   pdfGeneration.addEventListener('click', function() {
-    const currencyValue = currencyInput.value;
-    const doc = new window.jspdf.jsPDF();
-    const midPage = doc.internal.pageSize.getWidth() / 2;
+    let cotacoesData = [];
+    idaCotacoes.forEach(cotacaoItem => {
+      console.log('cotacaoItem', cotacaoItem);
+      console.log('Valor:', cotacaoItem.querySelector('.currency_input').value);
+      const id = cotacaoItem.id;
+      const bagagem = cotacaoItem.querySelector('#bagagem').value;
+      const assento = cotacaoItem.querySelector('#assento').value;
+      const valor = cotacaoItem.querySelector('.currency_input').value;
 
-    doc.setFillColor(188, 188, 188);
-    doc.rect(0, 0, doc.internal.pageSize.width, doc.internal.pageSize.height, 'F');
-
-    const screenshotImage = new Image();
-    screenshotImage.src = screenshotContainer.querySelector('img').src;
-    doc.addImage(screenshotImage, 'PNG', 5, 5, 200, 100);
+      cotacoesData.push({ id, bagagem, assento, valor });
+    });
     
-    doc.text(`Valor do bilhete: ${currencyValue}`, midPage, 120, null, null, 'center');
-  
-    doc.save('bilhete.pdf');
-  });
+    voltaCotacoes.forEach(cotacaoItem => {
+      console.log('cotacaoItem', cotacaoItem);
+      console.log('Valor:', cotacaoItem.querySelector('.currency_input').value);
+      const id = cotacaoItem.id;
+      const bagagem = cotacaoItem.querySelector('#bagagem').value;
+      const assento = cotacaoItem.querySelector('#assento').value;
+      const valor = cotacaoItem.querySelector('.currency_input').value;
 
-  function formatCurrency(value) {
-    let formattedValue = parseFloat(value.replace(/\D/g, '')) / 100;
-    formattedValue = formattedValue.toFixed(2).replace('.', ',');
-    return 'R$ ' + formattedValue.replace(/(\d)(?=(\d{3})+,)/g, '$1.');
-  }
+      cotacoesData.push({ id, bagagem, assento, valor });
+    });
 
-  currencyInput.addEventListener('input', function(event) {
-      let inputVal = event.target.value;
-
-      if (!inputVal) {
-          event.target.value = 'R$ 0,00';
-      } else {
-          event.target.value = formatCurrency(inputVal);
-      }
-  });
-
-  currencyInput.addEventListener('blur', function(event) {
-      let inputVal = event.target.value;
-
-      if (!inputVal) {
-          event.target.value = 'R$ 0,00';
-      } else {
-          event.target.value = formatCurrency(inputVal);
-      }
+    console.log('cotacoes data', cotacoesData);
+    // console.log(currencyValues);
+    // const screenshotImageUrl = screenshotContainer.querySelector('img').src;
+    
+    createPDF(cotacoesData, null);
   });
 });
