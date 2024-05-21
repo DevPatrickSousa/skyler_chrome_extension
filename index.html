@@ -9,6 +9,7 @@
     <script src="js/script.js" type="module"></script>
     <link rel="stylesheet" href="cropper/cropper.min.css">
     <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="node_modules/material-icons/iconfont/material-icons.css">
   </head>
   <body>
     <div class="header">
@@ -18,19 +19,159 @@
         </div>
       </div>
     </div>
-    
-    <div class="container">
 
+    <form>
+      <input type="radio" id="ida" name="flight_type" value="ida">
+      <label for="ida">ida</label><br>
+      <input type="radio" id="ida_volta" name="flight_type" value="ida_volta">
+      <label for="ida_volta">ida e volta</label><br>
+    </form>
+
+    <div id="cotacoes">
+      <div class="cotacoes_ida" style="display: none;">
+        <span class="cotacoes_header">IDA</span>
+        <div class="cotacao_ida" id="cotacao_ida_1">
+          <div class="cotacao_img">
+            <img src="/assets/header_flight.jpg" alt="teste">
+            <span class="cotacao_ida_id">Cotação ida 1</span>
+          </div>
+          <div class="line">
+
+          </div>
+          <div class="cotacao_form">
+            <div class="cotacao_form_item">
+              <div class="cotacao_form_item_img">
+                <img src="/assets/flight_luggage.jpg" alt="teste">
+                <span class="cotacao_ida_id">Quantidade de bagagens</span>
+              </div>
+              <div class="cotacao_form_item_options">
+                <!-- <label for="bagagem">Escolha a quantidade de bagagens:</label>
+                <br> -->
+                <select name="bagagem" id="bagagem">
+                  <option value="sem_bagagem">Sem bagagem</option>
+                  <option value="1_mala_23">1 mala de 23kg</option>
+                  <option value="2_malas_23">2 malas de 23kg</option>
+                  <option value="3_malas_23">3 malas de 23kg</option>
+                  <option value="1_mala_32">1 mala de 32kg</option>
+                  <option value="2_malas_32">2 malas de 32kg</option>
+                  <option value="3_malas_32">3 malas de 32kg</option>
+                </select>
+              </div>
+            </div>
+            <div class="line">
+
+            </div>
+            <div class="cotacao_form_item">
+              <div class="cotacao_form_item_img">
+                <img src="/assets/flight_seat.jpg" alt="teste">
+                <span class="cotacao_ida_id">Tipo de assento</span>
+              </div>
+              <div class="cotacao_form_item_options">
+                <select name="assento" id="assento">
+                  <option value="assento_economica">Econômica</option>
+                  <option value="assento_economica_premium">Econômica premium</option>
+                  <option value="assento_executiva">Executiva</option>
+                  <option value="assento_primeira_classe">Primeira classe</option>
+                </select>
+              </div>
+            </div>
+            <div class="line">
+
+            </div>
+            <div class="cotacao_form_item">
+              <div class="cotacao_form_item_img">
+                <img src="/assets/flight_price.jpg" alt="teste">
+                <span class="cotacao_ida_id">Valor do bilhete</span>
+              </div>
+              <div class="cotacao_form_item_options">
+                <input type="text" name="currency_input" class="currency_input" placeholder="R$"/>
+              </div>
+            </div>
+          </div>
+        </div>        
+        <button class="button_add_cotacao">Adicionar Cotação</button>
+      </div>
+
+      <div class="arrow" style="display: none;">
+        <span class="material-icons">arrow_downward</span>
+      </div>
+      
+      <div class="cotacoes_volta" style="display: none;">
+        <span class="cotacoes_header">VOLTA</span>
+        <div class="cotacao_volta" id="cotacao_volta_1">
+          <div class="cotacao_img">
+            <img src="/assets/header_flight_back.jpg" alt="teste">
+            <span class="cotacao_volta_id">Cotação volta 1</span>
+          </div>
+          <div class="line">
+
+          </div>
+          <div class="cotacao_form">
+            <div class="cotacao_form_item">
+              <div class="cotacao_form_item_img">
+                <img src="/assets/flight_luggage.jpg" alt="teste">
+                <span class="cotacao_volta_id">Quantidade de bagagens</span>
+              </div>
+              <div class="cotacao_form_item_options">
+                <!-- <label for="bagagem">Escolha a quantidade de bagagens:</label>
+                <br> -->
+                <select name="bagagem" id="bagagem">
+                  <option value="sem_bagagem">Sem bagagem</option>
+                  <option value="1_mala_23">1 mala de 23kg</option>
+                  <option value="2_malas_23">2 malas de 23kg</option>
+                  <option value="3_malas_23">3 malas de 23kg</option>
+                  <option value="1_mala_32">1 mala de 32kg</option>
+                  <option value="2_malas_32">2 malas de 32kg</option>
+                  <option value="3_malas_32">3 malas de 32kg</option>
+                </select>
+              </div>
+            </div>
+            <div class="line">
+
+            </div>
+            <div class="cotacao_form_item">
+              <div class="cotacao_form_item_img">
+                <img src="/assets/flight_seat.jpg" alt="teste">
+                <span class="cotacao_volta_id">Tipo de assento</span>
+              </div>
+              <div class="cotacao_form_item_options">
+                <select name="assento" id="assento">
+                  <option value="assento_economica">Econômica</option>
+                  <option value="assento_economica_premium">Econômica premium</option>
+                  <option value="assento_executiva">Executiva</option>
+                  <option value="assento_primeira_classe">Primeira classe</option>
+                </select>
+              </div>
+            </div>
+            <div class="line">
+
+            </div>
+            <div class="cotacao_form_item">
+              <div class="cotacao_form_item_img">
+                <img src="/assets/flight_price.jpg" alt="teste">
+                <span class="cotacao_volta_id">Valor do bilhete</span>
+              </div>
+              <div class="cotacao_form_item_options">
+                <input type="text" name="currency_input" class="currency_input" placeholder="R$"/>
+              </div>
+            </div>
+          </div>
+        </div>        
+        <button class="button_add_cotacao">Adicionar Cotação</button>
+      </div>
     </div>
+    
+    <!-- <div class="container">
 
-    <div class="cut">
+    </div> -->
+
+    <!-- <div class="cut">
       <button id="button-cut">Recortar</button>
       <button id="button-confirm" style="display: none;">Confirmar recorte</button>
-    </div>
-
+    </div> -->
+   
     <div class="createPDF">
-      <input type="text" id="currencyInput" placeholder="Digite o valor do bilhete"/>
-      <button id="pdfGeneration">Gerar PDF</button>
+      <button id="pdf_generation">Gerar PDF</button>
     </div>
   </body>
 </html>
