@@ -10,7 +10,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "date-fns": "^3.6.0",
     "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.8.2",
+    "ldloader": "^3.0.3",
     "material-icons": "^1.13.12"
   },
   "devDependencies": {

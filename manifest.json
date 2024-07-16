@@ -1,12 +1,27 @@
 {
   "manifest_version": 3,
-  "name": "Skyler Extension",
+  "name": "Skyler",
   "version": "1.0",
+  "description": "Gere informações detalhadas de um determinado voo para os clientes Skyler!",
   "permissions": [
-    "activeTab"
+    "tabs",
+    "activeTab",
+    "scripting"
   ],
+  "background": {
+    "service_worker": "js/background.js",
+    "type": "module"
+  },
   "action": {
     "default_popup": "index.html",
     "default_icon": "assets/skyler.png"
+  },
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "icons": {
+    "16": "/assets/skyler.png",
+    "48": "/assets/skyler.png",
+    "128": "/assets/skyler.png"
   }
 }
