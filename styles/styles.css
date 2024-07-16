@@ -1,5 +1,5 @@
 * {
-  font-family: 'Times New Roman', Times, serif;
+  font-family: 'Nunito', sans-serif;
   margin: 0;
   padding: 0;
 }
@@ -17,6 +17,11 @@
 @font-face {
   font-family: 'Montserrat';
   src: url('../fonts/Montserrat/Montserrat-VariableFont_wght.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Helvetica';
+  src: url('../fonts/Helvetica/Helvetica.ttf') format('truetype');
 }
 
 html {
@@ -58,9 +63,9 @@ html, body {
 }
 
 .container {
-  max-width: 700px;
+  max-width: 570px;
   max-height: 100%;
-  margin: 10px 10px;
+  margin: 0px 15px;
   border-radius: 10px;
   border-color: #BBC6B9;
   overflow: hidden;
@@ -129,7 +134,7 @@ input {
   height: 26px;
   line-height: 24px;
   padding: 8px 8px;
-  color: #687367;
+  color: #36395A;
   box-shadow: none;
   margin: 10px;
   outline: none;
@@ -155,6 +160,9 @@ input {
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 10px 0px;
+  position: absolute;
+  top: 177px;
 }
 
 .createPDF {
@@ -180,18 +188,21 @@ form label {
   min-height: 200px;
   max-width: 570px;
   max-height: 100%;
-  margin: 20px auto;
+  margin: 0px auto;
   border-radius: 10px;
   overflow: hidden;
   box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
+  background-color: #c8c8c8;
 }
 
 .cotacoes_header {
   background-color: #fff9f9;
   color: black;
+  padding-top: 5px;
 }
 
 .cotacao_ida {
@@ -200,9 +211,9 @@ form label {
   max-height: 100%;
   margin: 10px auto;
   border-radius: 10px;
-  /* border: 5px solid #FFFF; */
+  border: 5px solid #FFFF;
   overflow: hidden;
-  background-color: #687367;
+  background-color: #c8c8c8;
   display: flex;
   flex-direction: column;
   /* align-items: center;
@@ -232,6 +243,7 @@ form label {
   justify-content: center;
   align-items: center;
   min-height: 40px;
+  height: 100%;
 }
 
 .cotacao_ida span {
@@ -281,13 +293,11 @@ form label {
   max-height: 100%;
   margin: 10px auto;
   border-radius: 10px;
-  /* border: 5px solid #FFFF; */
+  border: 5px solid #FFFF;
   overflow: hidden;
-  background-color: #687367;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  justify-content: center;
+  background-color: #c8c8c8;
+  display: flex;
+  flex-direction: column;
   align-content: center;
   box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
 }
@@ -364,13 +374,13 @@ option {
 }
 
 span {
-  font-family: 'Times New Roman', Times, serif;
+  font-family: "Helvetica";
   color: #fff9f9;
   font-size: 16px;
 }
 
 label {
-  font-family: 'Times New Roman', Times, serif;
+  font-family: "Helvetica";
   color: #fff9f9;
   font-size: 16px;
 }
@@ -389,6 +399,7 @@ input[type="radio"] {
   justify-content: center;
   align-items: center;
   background-color: #c8c8c8;
+  margin: 10px 0;
 }
 
 .arrow span {
@@ -397,7 +408,7 @@ input[type="radio"] {
 
 .line {
   width: 100%;
-  border-bottom: 3px solid #808080;
+  border-bottom: 4px solid white;
 }
 
 .cotacao_form_item {
@@ -415,7 +426,7 @@ input[type="radio"] {
   height: 100%;
   overflow: hidden;
   max-height: 200px;
-  border-right: 3px solid #808080;
+  border-right: 3px solid white;
   position: relative;
   display: flex;
   justify-content: center;
@@ -445,13 +456,72 @@ input[type="radio"] {
  background-color: #dfdfdf;
 }
 
-.cotacao_form_item_options label{
+.cotacao_form_item_options label {
   background-color: #fff9f9;
   color: black;
  }
 
- .arrow {
+.cotacao_form_item_screenshot {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
- }
+  background-color: black;
+}
+
+.cotacao_form_item_screenshot img {
+  display: block;
+  max-width: 100%;
+  opacity: 0.7;
+}
+
+.cotacao_form_item_screenshot input.tab_id {
+  border-bottom: 1px solid white;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  background: none;
+  color: white;
+  text-align: left;
+  position: absolute;
+  padding: 0px !important;
+  border-radius: 0px !important;
+  text-align: center;
+  font-size: 25px;
+}
+
+.cotacao_form_item_screenshot input.tab_id::placeholder {
+  color: white;
+  font-size: 16px;
+  text-align: left;
+}
+
+.cotacao_form_item_screenshot input.tab_id:hover,
+.cotacao_form_item_screenshot input.tab_id:active,
+.cotacao_form_item_screenshot input.tab_id:focus {
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+#my-loader {
+  position: absolute;
+  z-index: 1000;
+  height: 100px;
+  width: 100px;
+  color: #D6D6E7;
+}
+
+.glass-effect {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 999;
+}
+
+
+
+
+
+
