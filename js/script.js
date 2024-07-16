@@ -1,124 +1,178 @@
-import { createNewCotacaoContainer, createPDF, addCurrencyInputListeners} from './helpers.js';
+import { createNewCotacaoContainer, createPDF, addListeners } from './helpers.js';
 
-document.addEventListener("DOMContentLoaded", function() {
-  // const cutButton = document.getElementById("button-cut");
-  // const confirmButton = document.getElementById("button-confirm");
+document.addEventListener("DOMContentLoaded", function () {
+  const cutButtonElements = document.querySelectorAll("#button-cut");
+  const confirmButton = document.getElementById("button-confirm");
   const pdfGeneration = document.getElementById("pdf_generation");
-  const screenshotContainer = document.querySelector(".container");
-  const currencyInputs = document.querySelectorAll('.currency_input');
-  const cotacoesContainer = document.getElementById("cotacoes");
   const idaRadio = document.getElementById("ida");
   const idaVoltaRadio = document.getElementById("ida_volta");
   const addCotacaoIdaButton = document.querySelector(".cotacoes_ida .button_add_cotacao");
   const addCotacaoVoltaButton = document.querySelector(".cotacoes_volta .button_add_cotacao");
+  const tabIDElements = document.querySelectorAll(".tab_id");
+  const confirmationButtonElements = document.querySelectorAll("#button-confirm");
 
   let default_arrow = document.querySelector(".arrow");
+  let pdfButton = document.querySelector(".createPDF");
   let cropper;
   let idaCotacoes = [];
   let voltaCotacoes = [];
 
-  // let idaCotacoes = Array.from(document.querySelectorAll('.cotacoes_ida .cotacao_ida .currency_input'));
-  // let voltaCotacoes = Array.from(document.querySelectorAll('.cotacoes_volta .cotacao_volta .currency_input'));
-
-  idaRadio.addEventListener("change", function() {
+  idaRadio.addEventListener("change", function () {
     const cotacoesIdaContainer = document.querySelector(".cotacoes_ida");
     const cotacoesVoltaContainer = document.querySelector(".cotacoes_volta");
-  
+
     if (idaRadio.checked) {
       cotacoesIdaContainer.style.display = "block";
       cotacoesVoltaContainer.style.display = "none";
       default_arrow.style.display = "none";
+      pdfButton.style.display = "flex";
       idaCotacoes = Array.from(document.querySelectorAll('.cotacoes_ida .cotacao_ida'));
-      addCurrencyInputListeners(idaCotacoes);
+      addListeners(idaCotacoes)
     }
   });
-  
-  idaVoltaRadio.addEventListener("change", function() {
+
+  idaVoltaRadio.addEventListener("change", function () {
     const cotacoesIdaContainer = document.querySelector(".cotacoes_ida");
     const cotacoesVoltaContainer = document.querySelector(".cotacoes_volta");
-  
+
     if (idaVoltaRadio.checked) {
       cotacoesIdaContainer.style.display = "block";
       cotacoesVoltaContainer.style.display = "block";
       default_arrow.style.display = "flex";
+      pdfButton.style.display = "flex";
       idaCotacoes = Array.from(document.querySelectorAll('.cotacoes_ida .cotacao_ida'));
       voltaCotacoes = Array.from(document.querySelectorAll('.cotacoes_volta .cotacao_volta'));
-      addCurrencyInputListeners([...idaCotacoes, ...voltaCotacoes]);
+      addListeners([...idaCotacoes, ...voltaCotacoes]);
     }
-  });  
+  });
 
-  addCotacaoIdaButton.addEventListener("click", function() {
+  addCotacaoIdaButton.addEventListener("click", function () {
     const newCotacao = createNewCotacaoContainer("ida");
     idaCotacoes.push(newCotacao);
+    addListeners([newCotacao]);
   });
 
-  addCotacaoVoltaButton.addEventListener("click", function() {
+  addCotacaoVoltaButton.addEventListener("click", function () {
     const newCotacao = createNewCotacaoContainer("volta");
     voltaCotacoes.push(newCotacao);
+    addListeners([newCotacao]);
   });
 
-  // chrome.tabs.captureVisibleTab(function(screenshotDataUrl) {
-  //   const screenshotImage = new Image();
-  //   screenshotImage.src = screenshotDataUrl;
-  //   screenshotContainer.appendChild(screenshotImage);
-  // });
+  tabIDElements.forEach(tabID => {
+    const cotacao = tabID.closest('.cotacao_ida') || tabID.closest('.cotacao_volta'); // Getting the correct cotacao before doing changes
+    tabID.addEventListener('change', function () {
+      const screenshotImage = cotacao.querySelector('.cotacao_form_item_screenshot_image');
+      const screenshotContainer = cotacao.querySelector(".cotacao_form_item_screenshot");
+      const cutButton = cotacao.querySelector('#button-cut');
+      const ldld = new ldloader({ root: cotacao.querySelector(".my-loader") });
 
-  // cutButton.addEventListener('click', function() {
-  //   cropper = new Cropper(screenshotContainer.querySelector('img'), {
-  //     aspectRatio: 16 / 9, 
-  //     crop: function(event) {
-  //       console.log(event.detail.x, event.detail.y, event.detail.width, event.detail.height);
-  //     }
-  //   });
+      ldld.on();
 
-  //   cutButton.style.display = 'none';
-  //   confirmButton.style.display = 'block';
-  // });
+      tabID.style.display = 'none';
+      confirmButton.style.display = 'none';
+      cutButton.style.display = 'none';
+      screenshotImage.style.display = 'none';
+      screenshotImage.src = '';
+      screenshotContainer.style.width = '500px';
+      screenshotContainer.style.height = '245px';
 
-  // confirmButton.addEventListener('click', function() {
-  //   if (cropper) {
-  //     const croppedCanvas = cropper.getCroppedCanvas();
-  //     const croppedImage = new Image();
-  //     croppedImage.src = croppedCanvas.toDataURL();
-  //     screenshotContainer.innerHTML = '';
-  //     screenshotContainer.appendChild(croppedImage);
+      const tabIndex = parseInt(tabID.value);
 
-  //     cropper.destroy();
-  //     cropper = null;
+      if (tabID.value) {
+        tabID.style.borderBottom = 'none';
+      } else {
+        tabID.style.borderBottom = '1px solid white';
+      }
 
-  //     confirmButton.style.display = 'none';
-  //     cutButton.style.display = 'block';
-  //   }
-  // });
+      if (!isNaN(tabIndex)) {
+        chrome.runtime.sendMessage({ action: 'captureTab', tabIndex: tabIndex }, function (response) {
+          if (response.success) {
+            ldld.off();
+            screenshotContainer.style.width = 'auto';
+            screenshotContainer.style.height = 'auto';
+            cutButton.style.display = 'flex';
+            screenshotImage.style.display = 'flex';
+            tabID.style.display = 'flex';
+            screenshotImage.src = response.screenshotDataUrl;
+          } else {
+            alert(response.message || "Erro ao capturar imagem.");
+            ldld.off();
+          }
+        });
+      } else {
+        alert("Número da página inválido.");
+      }
+    });
+  });
 
-  pdfGeneration.addEventListener('click', function() {
-    let cotacoesData = [];
+  cutButtonElements.forEach((cutButton) => {
+    const cotacao = cutButton.closest('.cotacao_ida') || cutButton.closest('.cotacao_volta'); // Getting the correct cotacao before doing changes
+    if (cotacao) {
+      cutButton.addEventListener("click", function () {
+        const confirmButton = cotacao.querySelector("#button-confirm");
+        const screenshotContainer = cotacao.querySelector(".cotacao_form_item_screenshot");
+
+        if (cropper) {
+          cropper.destroy();
+        }
+
+        cropper = new Cropper(screenshotContainer.querySelector('img'), {
+          aspectRatio: 16 / 9,
+          crop: function (event) {
+            console.log(event.detail.x, event.detail.y, event.detail.width, event.detail.height);
+          }
+        });
+
+        const confirmationButtonElements = cotacao.querySelectorAll("#button-confirm");
+        confirmationButtonElements.forEach((confirmationButton) => {
+          confirmationButton.addEventListener("click", function () {
+            const confirmButton = cotacao.querySelector("#button-confirm");
+            const screenshotContainer = cotacao.querySelector(".cotacao_form_item_screenshot");
+            const screenshotImage = screenshotContainer.querySelector('img');
+
+            if (cropper) {
+              const croppedCanvas = cropper.getCroppedCanvas();
+              const croppedImage = new Image();
+              croppedImage.src = croppedCanvas.toDataURL();
+
+              screenshotContainer.removeChild(screenshotImage);
+              screenshotContainer.insertBefore(croppedImage, screenshotContainer.firstChild);
+
+              cropper.destroy();
+              cropper = null;
+
+              confirmButton.style.display = 'none';
+              cutButton.style.display = 'block';
+            }
+          });
+        });
+      });
+    }
+  });
+
+  pdfGeneration.addEventListener('click', function () {
+    let cotacoesData = { ida: [], volta: [] };
+
     idaCotacoes.forEach(cotacaoItem => {
-      console.log('cotacaoItem', cotacaoItem);
-      console.log('Valor:', cotacaoItem.querySelector('.currency_input').value);
       const id = cotacaoItem.id;
       const bagagem = cotacaoItem.querySelector('#bagagem').value;
       const assento = cotacaoItem.querySelector('#assento').value;
       const valor = cotacaoItem.querySelector('.currency_input').value;
+      const img = cotacaoItem.querySelector(".cotacao_form_item_screenshot").querySelector('img').src;
 
-      cotacoesData.push({ id, bagagem, assento, valor });
+      cotacoesData.ida.push({ id, bagagem, assento, valor, img });
     });
-    
+
     voltaCotacoes.forEach(cotacaoItem => {
-      console.log('cotacaoItem', cotacaoItem);
-      console.log('Valor:', cotacaoItem.querySelector('.currency_input').value);
       const id = cotacaoItem.id;
       const bagagem = cotacaoItem.querySelector('#bagagem').value;
       const assento = cotacaoItem.querySelector('#assento').value;
       const valor = cotacaoItem.querySelector('.currency_input').value;
+      const img = cotacaoItem.querySelector(".cotacao_form_item_screenshot").querySelector('img').src;
 
-      cotacoesData.push({ id, bagagem, assento, valor });
+      cotacoesData.volta.push({ id, bagagem, assento, valor, img });
     });
 
-    console.log('cotacoes data', cotacoesData);
-    // console.log(currencyValues);
-    // const screenshotImageUrl = screenshotContainer.querySelector('img').src;
-    
-    createPDF(cotacoesData, null);
+    createPDF(cotacoesData);
   });
 });
