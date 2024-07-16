@@ -530,14 +530,9 @@ export function createNewTabAndCapture(url, callback) {
   chrome.windows.create({ url: url, type: 'popup', focused: false }, (newWindow) => {
     setTimeout(() => {
       chrome.tabs.captureVisibleTab(newWindow.id, { format: 'png' }, (screenshotDataUrl) => {
-        if (chrome.runtime.lastError) {
-          console.error('Error capturing the screenshot:', chrome.runtime.lastError);
-          callback(null);
-        } else {
           chrome.windows.remove(newWindow.id, () => {
             callback(screenshotDataUrl);
           });
-        }
       });
     }, 5000);
   });
