@@ -512,15 +512,29 @@ export function createPDF(cotacoes) {
     });
   }
 
-  // Footer
-  doc.setFontSize(10);
-  doc.text('Os termos de uso podem ser consultados em: ', midPage, pageHeight - 50, { align: 'center' });
-  doc.setFont('Helvetica', 'bold');
-  doc.textWithLink('https://voeskyler.com/files/termos-de-uso.pdf', midPage, pageHeight - 45, { url: 'https://voeskyler.com/files/termos-de-uso.pdf', align: 'center' });
-  doc.setFont('Helvetica', 'normal');
-  doc.text('Valores e disponibilidade sujeitos à alteração sem aviso prévio, de acordo com a companhia aérea.', midPage, pageHeight - 40, { align: 'center' });
-  doc.addImage(logo, 'PNG', logoWidth, logoHeight, 20, 20);
-
+  if (doc.lastAutoTable.finalY + 50 > pageHeight - footerHeight) {
+    verticalPosition = headerHeight + 5;
+    doc.addPage(); // Add a new page if there isn't enough space on the current page
+    doc.setFillColor(242, 242, 242);
+    doc.rect(0, 0, pageWidth, pageHeight, 'F');
+    // Footer
+    doc.setFontSize(10);
+    doc.text('Os termos de uso podem ser consultados em: ', midPage, pageHeight - 50, { align: 'center' });
+    doc.setFont('Helvetica', 'bold');
+    doc.textWithLink('https://voeskyler.com/files/termos-de-uso.pdf', midPage, pageHeight - 45, { url: 'https://voeskyler.com/files/termos-de-uso.pdf', align: 'center' });
+    doc.setFont('Helvetica', 'normal');
+    doc.text('Valores e disponibilidade sujeitos à alteração sem aviso prévio, de acordo com a companhia aérea.', midPage, pageHeight - 40, { align: 'center' });
+    doc.addImage(logo, 'PNG', logoWidth, logoHeight, 20, 20);
+  } else {
+    // Footer
+    doc.setFontSize(10);
+    doc.text('Os termos de uso podem ser consultados em: ', midPage, pageHeight - 50, { align: 'center' });
+    doc.setFont('Helvetica', 'bold');
+    doc.textWithLink('https://voeskyler.com/files/termos-de-uso.pdf', midPage, pageHeight - 45, { url: 'https://voeskyler.com/files/termos-de-uso.pdf', align: 'center' });
+    doc.setFont('Helvetica', 'normal');
+    doc.text('Valores e disponibilidade sujeitos à alteração sem aviso prévio, de acordo com a companhia aérea.', midPage, pageHeight - 40, { align: 'center' });
+    doc.addImage(logo, 'PNG', logoWidth, logoHeight, 20, 20);
+  }
   // Saving doc
   doc.save('bilhete.pdf');
 }
