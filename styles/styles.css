@@ -456,6 +456,10 @@ input[type="radio"] {
  background-color: #dfdfdf;
 }
 
+.cotacao_form_item_options select {
+  text-overflow: ellipsis;
+}
+
 .cotacao_form_item_options label {
   background-color: #fff9f9;
   color: black;
